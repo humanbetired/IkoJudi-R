@@ -77,11 +77,13 @@ def index():
 
             result, threshold, img, analysis_time = predict_image(file.stream)
 
-            buffered = io.BytesIO()
-            img.save(buffered, format="PNG")
+            image_data = None  
 
-            img_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
-            image_data = f"data:image/png;base64,{img_base64}"
+            if result == "Bukan Judol":
+                buffered = io.BytesIO()
+                img.save(buffered, format="PNG")
+                img_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
+                image_data = f"data:image/png;base64,{img_base64}"
 
             return render_template(
                 'index.html',
