@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perbandingan Model - Iko'Judi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        beige: '#F5F5F5',
+                        cream: '#FDFDFD',
+                        sage: '#328E6E',
+                        'sage-dark': '#16610E',
+                        lavender: '#780C28',
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style type="text/tailwindcss">
+        @layer components {
+              .soft-shadow {
+                @apply shadow-[0_4px_20px_rgba(0,0,0,0.05)];
+              }
+              .btn-hover {
+                @apply transition-all duration-300 ease-in-out hover:bg-opacity-90 hover:scale-105;
+              }
+              .navbar {
+                @apply fixed top-0 w-full bg-cream bg-opacity-80 backdrop-blur-md z-50 transition-all duration-300;
+              }
+              .card-hover {
+                @apply transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md;
+              }
+            }
+          </style>
+</head>
+
+<body class="min-h-screen bg-beige font-poppins text-gray-800">
+    <header class="navbar py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-xl font-medium text-gray-800">Iko'Judi</h1>
+            <nav class="flex space-x-6 text-sm text-gray-600">
+                <a href="/" class="hover:text-sage-dark transition-colors duration-300">Home</a>
+                <a href="/compare" class="hover:text-sage-dark">Compare</a>
+            </nav>
+        </div>
+    </header>
+    <div class="container mx-auto px-4 py-24 font-poppins">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Perbandingan Model</h1>
+        <div class="bg-white rounded-2xl p-6 soft-shadow overflow-x-auto">
+            <table class="min-w-full border border-gray-200 text-sm text-gray-700">
+                <thead class="bg-sage text-white">
+                    <tr>
+                        {% for col in columns %}
+                        <th class="px-4 py-2 text-left">{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    {% set i = loop.index0 %}
+                    {% set model_highlight = best_rows.get(i) %}
+                    <tr
+                        class="border-b transition {% if model_highlight %}bg-sage/10 hover:bg-sage/20{% else %}hover:bg-gray-50{% endif %}">
+                        {% for cell in row %}
+                        <td class="px-4 py-3 align-middle">
+                            {% if loop.index0 == 0 and model_highlight %}
+                            <div class="inline-flex items-center gap-2 bg-sage/20 rounded-full px-3 py-1">
+                                <span class="font-semibold text-sage">{{ cell }}</span>
+                                <span class="flex items-center text-xs bg-sage text-white px-2 py-0.5 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-yellow-300 mr-1" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path
+                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.105 3.401a1 1 0 00.95.69h3.582c.969 0 1.371 1.24.588 1.81l-2.9 2.107a1 1 0 00-.364 1.118l1.106 3.401c.3.921-.755 1.688-1.54 1.118l-2.9-2.107a1 1 0 00-1.175 0l-2.9 2.107c-.785.57-1.84-.197-1.54-1.118l1.105-3.401a1 1 0 00-.364-1.118L2.326 8.828c-.783-.57-.38-1.81.588-1.81h3.582a1 1 0 00.95-.69l1.105-3.401z" />
+                                    </svg>
+                                    Terbaik
+                                </span>
+                            </div>
+                            {% else %}
+                            {{ cell }}
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iko'Judi - Deteksi Gambar Iklan Judi Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        beige: '#F5F5F5',
+                        cream: '#FDFDFD',
+                        sage: '#328E6E',
+                        'sage-dark': '#16610E',
+                        lavender: '#780C28',
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />    
+    <style type="text/tailwindcss">
+        @layer components {
+          .soft-shadow {
+            @apply shadow-[0_4px_20px_rgba(0,0,0,0.05)];
+          }
+          .btn-hover {
+            @apply transition-all duration-300 ease-in-out hover:bg-opacity-90 hover:scale-105;
+          }
+          .navbar {
+            @apply fixed top-0 w-full bg-cream bg-opacity-80 backdrop-blur-md z-50 transition-all duration-300;
+          }
+          .card-hover {
+            @apply transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md;
+          }
+          .model-badge {
+            @apply px-2 py-1 bg-sage text-white text-xs rounded-full shadow-sm transition-all duration-300 ease-in-out;
+          }
+        }
+      </style>
+</head>
+
+<body class="min-h-screen bg-beige font-poppins text-gray-800">
+    <!-- Navbar -->
+    <header class="navbar py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-xl font-medium text-gray-800">Iko'Judi</h1>
+            <nav class="flex space-x-6 text-sm text-gray-600">
+                <a href="/" class="hover:text-sage-dark transition-colors duration-300">Home</a>
+                <a href="/compare" class="hover:text-sage-dark">Compare</a>
+                <span class="model-badge hover:scale-105">
+                    Model Aktif: {{ selected_model }}
+                </span>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-24 max-w-3xl">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-medium text-gray-800 mb-4">Iko'Judi</h1>
+            <p class="text-lg text-gray-600">Deteksi konten judi online dalam gambar</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-8 soft-shadow mb-8 card-hover">
+            <h2 class="text-2xl font-medium text-gray-800 mb-4">Tentang Iko'Judi</h2>
+            <p class="text-gray-600 leading-relaxed">Iko'Judi adalah sebuah demo berbasis CNN dengan transfer learning VGG16 dan MobileNetV2 yang menampilkan cara kerja model klasifikasi gambar buatan saya dalam
+            mendeteksi apakah suatu gambar merupakan iklan judi online atau bukan. Tujuan dari program ini adalah untuk
+            memperlihatkan kemampuan model dalam mengenali konten secara visual.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 soft-shadow mb-8 card-hover text-left">
+            <h2 class="text-xl font-medium text-gray-800 mb-3">Pilih Model yang Digunakan</h2>
+            <form action="/set_model" method="POST" class="flex items-center space-x-4">
+                <select name="model_name"
+                    class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-sage text-gray-700">
+                    <option value="VGG16" {% if selected_model=='VGG16' %}selected{% endif %}>VGG16 (Transfer Learning)</option>
+                    <option value="MobileNetV2" {% if selected_model=='MobileNetV2' %}selected{% endif %}>MobileNetV2 (Transfer
+                        Learning)</option>
+                </select>
+                <button type="submit" class="bg-sage text-white px-4 py-2 rounded-lg btn-hover">
+                    Pakai Model
+                </button>
+            </form>
+        </div>
+
+        <div class="bg-white rounded-2xl p-8 soft-shadow card-hover">
+            <h3 class="text-xl font-medium text-gray-800 mb-6 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-sage" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                Upload Gambar
+            </h3>
+            <form method="POST" enctype="multipart/form-data" class="space-y-6" id="uploadForm">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-600">Pilih gambar untuk dianalisis</label>
+                    <div id="dropzone"
+                        class="mt-1 flex justify-center items-center px-6 pt-5 pb-6 border-2 border-gray-200 border-dashed rounded-xl transition-colors hover:border-sage bg-cream cursor-pointer">
+                        <div class="text-center" id="uploadInfo">
+                            <svg class="mx-auto h-12 w-12 text-sage animate-pulse" stroke="currentColor" fill="none"
+                                viewBox="0 0 48 48" aria-hidden="true">
+                                <path
+                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600 justify-center">
+                                <label for="file-upload"
+                                    class="relative cursor-pointer rounded-md font-medium text-sage hover:text-sage-dark">
+                                    <span class="underline">Klik untuk upload</span>
+                                    <input id="file-upload" name="image" type="file" class="sr-only" accept="image/*"
+                                        required>
+                                </label>
+                                <p class="pl-1">atau drag & drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">PNG, JPG, JPEG (max. 5MB)</p>
+                            <p id="fileName" class="text-sm text-sage font-medium mt-3 hidden"></p>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" id="analyzeBtn"
+                    class="w-full flex justify-center items-center py-3 px-4 rounded-xl text-lg font-medium text-white bg-sage btn-hover">
+                    <span id="btnText">Analisis Gambar</span>
+                    <span id="loadingSpinner" class="hidden ml-2">
+                        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                    </span>
+                </button>
+            </form>
+        </div>
+
+        {% if result %}
+        <div class="mt-8 space-y-6">
+            <div class="bg-white rounded-2xl p-6 soft-shadow card-hover border border-gray-200">
+                <h3 class="text-sm font-medium text-gray-600 uppercase tracking-wider mb-4">Hasil Analisis</h3>
+                <div class="flex items-start">
+                    {% if "Bukan Judol" in result %}
+                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-sage flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    {% else %}
+                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-lavender flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    {% endif %}
+                    <div class="ml-4">
+                        <h3
+                            class="text-xl font-medium {% if 'Bukan Judol' in result %}text-sage{% else %}text-lavender{% endif %}">
+                            {{ result }}</h3>
+                        <p class="text-gray-600 mt-2">Value Image: <span class="font-medium">{{ "%.2f"|format(threshold
+                                * 100) }}%</span></p>
+                        <div class="mt-3">
+                            {% if "Bukan Judol" in result %}
+                            <p class="text-gray-600">Gambar ini tidak terdeteksi mengandung konten judi.</p>
+                            {% else %}
+                            <p class="text-gray-600">Gambar ini terdeteksi mengandung konten judi online.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if image_data %}
+            <div class="bg-white rounded-2xl overflow-hidden soft-shadow card-hover border border-gray-200">
+                <img src="{{ image_data }}" alt="Analyzed image"
+                    class="w-full h-auto rounded-2xl transition-transform duration-300 hover:scale-105">
+                <div class="p-4">
+                    <h4 class="font-medium text-gray-800">Gambar yang Dianalisis</h4>
+                    <p class="text-sm text-gray-600">{% if "Bukan Judol" in result %}Aman dari konten judi{% else
+                        %}Mengandung konten judi{% endif %}</p>
+                </div>
+            </div>
+            {% else %}
+            <div class="bg-white rounded-2xl p-6 soft-shadow card-hover border border-lavender">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-lavender flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-xl font-medium text-lavender">Gambar disembunyikan</h3>
+                        <p class="text-sm text-gray-600 mt-1">Gambar ini mengandung konten judi dan telah diblokir untuk
+                            perlindungan pengguna.</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="mt-8 bg-white border border-lavender rounded-2xl p-6 soft-shadow">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-lavender flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-xl font-medium text-lavender">Terjadi Kesalahan</h3>
+                    <p class="text-sm text-gray-600 mt-1">{{ error }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl p-6 soft-shadow card-hover border border-gray-200">
+                <div class="flex items-center">
+                    <div class="p-3 bg-cream rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-sage" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-xl font-medium text-gray-800">
+                            {% if threshold is defined %}
+                            {{ "%.2f"|format(threshold * 100) }}%
+                            {% else %}
+                            0.00%
+                            {% endif %}
+                        </h3>
+                        <p class="text-sm text-gray-600">Value Image <50% maka judi online</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 soft-shadow card-hover border border-gray-200">
+                <div class="flex items-center">
+                    <div class="p-3 bg-cream rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-sage" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-xl font-medium text-gray-800">
+                            {% if analysis_time is defined %}
+                            {{ "%.3f"|format(analysis_time) }}s
+                            {% else %}
+                            0.000s
+                            {% endif %}
+                        </h3>
+                        <p class="text-sm text-gray-600">Waktu Analisis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 bg-white rounded-2xl p-6 text-center soft-shadow">
+            <div class="flex justify-center space-x-4 mb-4 text-sm text-gray-600">
+                <a href="#" class="hover:text-sage transition-colors duration-300">Kebijakan Privasi</a>
+                <a href="#" class="hover:text-sage transition-colors duration-300">Syarat & Ketentuan</a>
+                <a href="#" class="hover:text-sage transition-colors duration-300">Kontak Kami</a>
+            </div>
+            <p class="text-sm text-gray-600">© 2025 Iko'Judi. Hak cipta dilindungi.</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+</body>
+
+</html>
