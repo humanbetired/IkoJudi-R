@@ -128,16 +128,15 @@ def set_model():
 
 @app.route('/compare')
 def compare():
-
     csv_path = "hasil_eksperimen.csv"
-
     if not os.path.exists(csv_path):
         return render_template("compare.html",
                                columns=[],
                                rows=[],
-                               best_rows=[])
+                               best_rows={})
 
-    df = pd.read_csv(csv_path)
+    df = pd.read_csv(csv_path, sep=';', encoding='utf-8-sig')
+    df.columns = df.columns.str.strip()
 
     best_rows = {}
 
