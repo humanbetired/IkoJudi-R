@@ -48,18 +48,37 @@
 
 <body class="min-h-screen bg-beige font-poppins text-gray-800">
     <!-- Navbar -->
-    <header class="navbar py-4">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-xl font-medium text-gray-800">Iko'Judi</h1>
-            <nav class="flex space-x-6 text-sm text-gray-600">
-                <a href="/" class="hover:text-sage-dark transition-colors duration-300">Home</a>
-                <a href="/compare" class="hover:text-sage-dark">Compare</a>
-                <span class="model-badge hover:scale-105">
-                    Model Aktif: {{ selected_model }}
-                </span>
-            </nav>
+    <header class="w-full flex justify-between items-center p-4">
+    
+        <div class="text-lg font-semibold text-gray-800">
+            Iko'Judi
         </div>
+    
+        <nav class="hidden md:flex space-x-6 text-sm text-gray-600">
+            <a href="/" class="hover:text-sage-dark transition-colors duration-300">
+                Home
+            </a>
+            <a href="/compare" class="hover:text-sage-dark">
+                Compare
+            </a>
+            <span class="model-badge hover:scale-105">
+                Model Aktif: {{ selected_model }}
+            </span>
+        </nav>
+        <button id="menu-btn" class="md:hidden text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+    
     </header>
+    <div id="mobile-menu" class="hidden md:hidden flex flex-col items-end px-4 pb-4 space-y-3 text-sm text-gray-600">
+        <a href="/" class="hover:text-sage-dark">Home</a>
+        <a href="/compare" class="hover:text-sage-dark">Compare</a>
+        <span class="model-badge">
+            Model Aktif: {{ selected_model }}
+        </span>
+    </div>
 
     <div class="container mx-auto px-4 py-24 max-w-3xl">
         <div class="text-center mb-12">
@@ -77,14 +96,18 @@
 
         <div class="bg-white rounded-2xl p-6 soft-shadow mb-8 card-hover text-left">
             <h2 class="text-xl font-medium text-gray-800 mb-3">Pilih Model yang Digunakan</h2>
-            <form action="/set_model" method="POST" class="flex items-center space-x-4">
+            <form action="/set_model" method="POST" class="flex flex-col space-y-4">
                 <select name="model_name"
                     class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-sage text-gray-700">
-                    <option value="VGG16" {% if selected_model=='VGG16' %}selected{% endif %}>VGG16 (Transfer Learning)</option>
-                    <option value="MobileNetV2" {% if selected_model=='MobileNetV2' %}selected{% endif %}>MobileNetV2 (Transfer
-                        Learning)</option>
+                    <option value="VGG16" {% if selected_model=='VGG16' %}selected{% endif %}>
+                        VGG16 (Transfer Learning)
+                    </option>
+                    <option value="MobileNetV2" {% if selected_model=='MobileNetV2' %}selected{% endif %}>
+                        MobileNetV2 (Transfer Learning)
+                    </option>
                 </select>
-                <button type="submit" class="bg-sage text-white px-4 py-2 rounded-lg btn-hover">
+            
+                <button type="submit" class="bg-sage text-white px-4 py-2 rounded-lg btn-hover w-full">
                     Pakai Model
                 </button>
             </form>
@@ -284,8 +307,6 @@
             <p class="text-sm text-gray-600">© 2025 Iko'Judi. Hak cipta dilindungi.</p>
         </footer>
     </div>
-
     <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
 </body>
-
 </html>
