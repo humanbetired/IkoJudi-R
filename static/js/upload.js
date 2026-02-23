@@ -18,7 +18,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (file) showUploadSuccess(file);
+
+            if (file) {
+                const maxSize = 5 * 1024 * 1024; // 5MB
+
+                if (file.size > maxSize) {
+                    alert("File terlalu besar! Maksimal 5MB.");
+                    fileInput.value = "";
+                    return;
+                }
+
+                showUploadSuccess(file);
+            }
         });
 
         dropzone.addEventListener('dragover', (e) => {
@@ -33,9 +44,18 @@ document.addEventListener("DOMContentLoaded", function () {
         dropzone.addEventListener('drop', (e) => {
             e.preventDefault();
             const files = e.dataTransfer.files;
+
             if (files.length > 0) {
+                const file = files[0];
+                const maxSize = 5 * 1024 * 1024;
+
+                if (file.size > maxSize) {
+                    alert("File terlalu besar! Maksimal 5MB.");
+                    return;
+                }
+
                 fileInput.files = files;
-                showUploadSuccess(files[0]);
+                showUploadSuccess(file);
             }
         });
 

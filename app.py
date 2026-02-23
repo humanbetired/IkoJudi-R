@@ -10,6 +10,15 @@ import pandas as pd
 import os
 
 app = Flask(__name__)
+from werkzeug.exceptions import RequestEntityTooLarge
+@app.errorhandler(RequestEntityTooLarge)
+def handle_large_file(e):
+    return render_template(
+        'index.html',
+        selected_model=selected_model,
+        result=None,
+        error="Ukuran file terlalu besar! Maksimal 5MB."
+    ), 413
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  
 
 MODEL_PATHS = {
