@@ -64,34 +64,37 @@
 
 
     <!-- NAVBAR -->
-    <header class="navbar flex justify-between items-center px-6 py-4">
-
-        <div class="text-lg font-medium">
+    <header class="w-full flex justify-between items-center p-4">
+    
+        <div class="text-lg font-semibold text-gray-800">
             Iko'Judi
         </div>
-
+    
         <nav class="hidden md:flex space-x-6 text-sm text-gray-600">
-
-            <a href="/" class="hover:text-sage-dark">
+            <a href="/" class="hover:text-sage-dark transition-colors duration-300">
                 Home
             </a>
-
             <a href="/compare" class="hover:text-sage-dark">
                 Compare
             </a>
-
-            <a href="/train" class="hover:text-sage-dark text-sage font-medium">
+            <a href="/train_page" class="hover:text-sage-dark">
                 Train
             </a>
-
-            <span class="model-badge">
-                Training Mode
-            </span>
-
         </nav>
-
+        <button id="menu-btn" class="md:hidden text-gray-600 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+    
     </header>
-
+    <div id="mobile-menu" class="hidden md:hidden flex flex-col items-end px-4 pb-4 space-y-3 text-sm text-gray-600">
+        <a href="/" class="hover:text-sage-dark">Home</a>
+        <a href="/compare" class="hover:text-sage-dark">Compare</a>
+        <a href="/train_page" class="hover:text-sage-dark">
+            Train
+        </a>
+    </div>
 
 
     <!-- CONTENT -->
@@ -339,6 +342,7 @@
 
 
     <script src="/static/js/train.js"></script>
+    <script src="/static/js/upload.js"></script>
 
 </body>
 
