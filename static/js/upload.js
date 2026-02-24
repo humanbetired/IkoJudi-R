@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const file = e.target.files[0];
 
             if (file) {
-                const maxSize = 5 * 1024 * 1024; // 5MB
+                const maxSize = 1024 * 1024 * 1024; 
 
                 if (file.size > maxSize) {
                     alert("File terlalu besar! Maksimal 5MB.");
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (files.length > 0) {
                 const file = files[0];
-                const maxSize = 5 * 1024 * 1024;
+                const maxSize = 1024 * 1024 * 1024;
 
                 if (file.size > maxSize) {
                     alert("File terlalu besar! Maksimal 5MB.");

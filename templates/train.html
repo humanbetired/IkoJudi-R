@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Iko'Judi - Train Model</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        beige: '#F5F5F5',
+                        cream: '#FDFDFD',
+                        sage: '#328E6E',
+                        'sage-dark': '#16610E',
+                        lavender: '#780C28',
+                    },
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        };
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />
+
+    <style type="text/tailwindcss">
+        @layer components {
+
+            .soft-shadow {
+                @apply shadow-[0_4px_20px_rgba(0,0,0,0.05)];
+            }
+
+            .btn-hover {
+                @apply transition-all duration-300 ease-in-out hover:bg-opacity-90 hover:scale-105;
+            }
+
+            .navbar {
+                @apply fixed top-0 w-full bg-cream bg-opacity-80 backdrop-blur-md z-50;
+            }
+
+            .card-hover {
+                @apply transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-md;
+            }
+
+            .model-badge {
+                @apply px-2 py-1 bg-sage text-white text-xs rounded-full shadow-sm;
+            }
+
+        }
+    </style>
+
+</head>
+
+
+<body class="min-h-screen bg-beige font-poppins text-gray-800">
+
+
+    <!-- NAVBAR -->
+    <header class="navbar flex justify-between items-center px-6 py-4">
+
+        <div class="text-lg font-medium">
+            Iko'Judi
+        </div>
+
+        <nav class="hidden md:flex space-x-6 text-sm text-gray-600">
+
+            <a href="/" class="hover:text-sage-dark">
+                Home
+            </a>
+
+            <a href="/compare" class="hover:text-sage-dark">
+                Compare
+            </a>
+
+            <a href="/train" class="hover:text-sage-dark text-sage font-medium">
+                Train
+            </a>
+
+            <span class="model-badge">
+                Training Mode
+            </span>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- CONTENT -->
+    <div class="container mx-auto px-4 py-28 max-w-3xl">
+
+
+        <div class="text-center mb-10">
+
+            <h1 class="text-3xl font-medium mb-2">
+                Train Model
+            </h1>
+
+            <p class="text-gray-600">
+                Latih model VGG16 atau MobileNetV2 dengan dataset sendiri
+            </p>
+
+        </div>
+
+
+
+        <!-- DATASET CARD -->
+        <div class="bg-white rounded-2xl p-6 soft-shadow card-hover mb-6">
+
+            <h2 class="text-xl font-medium mb-4">
+                Upload Dataset
+            </h2>
+
+            <input type="file" id="datasetZip" accept=".zip"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-cream">
+
+            <button onclick="uploadDataset()" class="mt-4 bg-sage text-white px-4 py-2 rounded-lg btn-hover">
+
+                Upload Dataset
+
+            </button>
+
+            <div id="uploadStatus" class="text-sm mt-3 text-sage font-medium">
+            </div>
+
+        </div>
+
+
+
+        <!-- PARAMETER CARD -->
+        <div class="bg-white rounded-2xl p-6 soft-shadow card-hover mb-6">
+
+            <h2 class="text-xl font-medium mb-4">
+                Training Parameters
+            </h2>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+                <div>
+
+                    <label class="text-sm text-gray-600">
+                        Model
+                    </label>
+
+                    <select id="model" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+
+                        <option value="VGG16">
+                            VGG16
+                        </option>
+
+                        <option value="MobileNetV2">
+                            MobileNetV2
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div>
+
+                    <label class="text-sm text-gray-600">
+                        Epoch
+                    </label>
+
+                    <input type="number" id="epochs" value="5"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2">
+
+                </div>
+
+
+
+                <div>
+
+                    <label class="text-sm text-gray-600">
+                        Learning Rate
+                    </label>
+
+                    <input type="number" id="lr" value="0.0001" step="0.0001"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2">
+
+                </div>
+
+
+
+                <div>
+
+                    <label class="text-sm text-gray-600">
+                        Dropout
+                    </label>
+
+                    <input type="number" id="dropout" value="0.5" step="0.1"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2">
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="mt-4">
+
+                <label class="text-sm text-gray-600">
+
+                    <input type="checkbox" id="fine_tune">
+
+                    Fine Tune
+
+                </label>
+
+            </div>
+
+
+
+            <button id="trainBtn" onclick="startTraining()" disabled
+                class="mt-4 bg-gray-400 text-white px-6 py-2 rounded cursor-not-allowed">
+            
+                Start Training
+            
+            </button>
+
+
+        </div>
+
+
+
+        <!-- METRICS -->
+        <div id="metrics" class="bg-white rounded-2xl p-6 soft-shadow card-hover hidden mb-6">
+
+            <h2 class="text-xl font-medium mb-3">
+                Metrics
+            </h2>
+
+            <p id="accuracy"></p>
+
+            <p id="precision"></p>
+
+            <p id="recall"></p>
+
+            <p id="f1"></p>
+
+        </div>
+
+
+
+        <!-- PLOTS -->
+        <div id="plots" class="bg-white rounded-2xl p-6 soft-shadow card-hover hidden mb-6">
+
+            <h2 class="text-xl font-medium mb-3">
+                Confusion Matrix
+            </h2>
+
+            <img id="confusionImg" class="rounded-lg border">
+
+
+            <h2 class="text-xl font-medium mt-6 mb-3">
+                Accuracy Graph
+            </h2>
+
+            <img id="accuracyImg" class="rounded-lg border">
+
+        </div>
+
+
+
+        <!-- DOWNLOAD -->
+        <div id="downloadSection" class="hidden text-center">
+
+            <a href="/download_model" class="bg-sage text-white px-6 py-3 rounded-xl btn-hover inline-block">
+
+                Download Model
+
+            </a>
+
+        </div>
+
+
+
+        <!-- FOOTER -->
+        <footer class="mt-12 bg-white rounded-2xl p-6 text-center soft-shadow">
+
+            <p class="text-sm text-gray-600">
+                © 2025 Iko'Judi Training Module
+            </p>
+
+        </footer>
+
+
+    </div>
+
+
+
+
+    <!-- OVERLAY -->
+    <div id="trainingOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+
+        <div class="bg-white rounded-2xl p-8 text-center soft-shadow w-80">
+
+            <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-sage mx-auto mb-4"></div>
+
+            <h2 class="text-lg font-medium mb-2">
+                Training sedang berjalan
+            </h2>
+
+            <p class="text-sm text-gray-500 mb-4">
+                Mohon tunggu...
+            </p>
+
+
+            <div class="w-full bg-gray-200 rounded-full h-3">
+
+                <div id="overlayBar" class="bg-sage h-3 rounded-full" style="width:0%">
+                </div>
+
+            </div>
+
+
+            <p id="overlayPercent" class="mt-2 text-sm">
+                0%
+            </p>
+
+
+        </div>
+
+    </div>
+
+
+
+    <script src="/static/js/train.js"></script>
+
+</body>
+
+</html>
