@@ -26,7 +26,7 @@ import keras
 app = Flask(__name__)
 
 LAST_ACTIVITY = time.time()
-TIMEOUT = 60 
+TIMEOUT = 60 * 60
 UPLOAD_FOLDER = "uploads"
 DATASET_FOLDER = "datasets"
 TRAINED_MODEL_FOLDER = "trained_models"
